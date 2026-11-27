@@ -41,11 +41,11 @@ if %errorlevel% neq 0 (
 
 echo [2/3] Committing changes...
 git diff --cached --quiet
-if %errorlevel% equ 0 (
+if !errorlevel! equ 0 (
     echo        No new changes to commit. Proceeding to push...
 ) else (
-    git commit -m "%COMMIT_MSG%"
-    if %errorlevel% neq 0 (
+    git commit -m "!COMMIT_MSG!"
+    if !errorlevel! neq 0 (
         echo [ERROR] git commit failed.
         pause
         exit /b 1

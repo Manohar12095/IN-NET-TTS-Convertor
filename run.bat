@@ -24,7 +24,7 @@ echo        Python found. OK
 
 :: ── Install / upgrade dependencies ────────────────────────
 echo [2/3] Checking dependencies (flask, edge-tts>=7.3.1)...
-python -c "import flask, edge_tts; v=tuple(int(x) for x in edge_tts.__version__.split('.')[:3]); assert v >= (7, 3, 1)" >nul 2>&1
+python -c "import sys, flask, edge_tts; v=[int(x) for x in edge_tts.__version__.split('.')[:3]]; sys.exit(0 if min(v,[7,3,1])==[7,3,1] else 1)" >nul 2>&1
 if %errorlevel% neq 0 (
     echo        Installing / upgrading dependencies...
     python -m pip install -r "%~dp0requirements.txt" --upgrade --quiet --no-warn-script-location
