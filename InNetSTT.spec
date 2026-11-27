@@ -10,25 +10,33 @@
 # OUTPUT: dist\InNetSTT.exe
 # ──────────────────────────────────────────────────────────────────────────────
 
+from PyInstaller.utils.hooks import collect_data_files
+
 block_cipher = None
 
 a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
-    # Bundle templates and Assets so Flask can serve index.html and logo.png at runtime
+    # Bundle templates, Assets, and certifi CA certificates for edge-tts HTTPS/WSS
     datas=[
         ('templates', 'templates'),
         ('Assets', 'Assets'),
-    ],
+    ] + collect_data_files('certifi'),
     # edge-tts uses several submodules that PyInstaller misses on auto-scan
     hiddenimports=[
         'edge_tts',
         'edge_tts.communicate',
+        'edge_tts.constants',
+        'edge_tts.data_classes',
+        'edge_tts.drm',
+        'edge_tts.exceptions',
         'edge_tts.list_voices',
         'edge_tts.models',
         'edge_tts.submaker',
+        'edge_tts.typing',
         'edge_tts.util',
+        'certifi',
         'aiohttp',
         'aiohttp.connector',
         'aiohttp.client',

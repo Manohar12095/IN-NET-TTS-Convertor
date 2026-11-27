@@ -24,7 +24,7 @@ echo        OK
 
 :: ── Step 2: Install build deps ───────────────────────────
 echo [2/5] Installing build tools (pyinstaller, Pillow)...
-pip install pyinstaller Pillow --quiet --no-warn-script-location
+python -m pip install pyinstaller Pillow --quiet --no-warn-script-location
 if %errorlevel% neq 0 (
     echo [ERROR] Failed to install build tools.
     pause & exit /b 1
@@ -49,7 +49,7 @@ echo        OK
 :: ── Step 5: Build ─────────────────────────────────────────
 echo [5/5] Building InNetSTT.exe (this may take 1-3 minutes)...
 echo.
-pyinstaller InNetSTT.spec --noconfirm
+python -m PyInstaller InNetSTT.spec --noconfirm
 if %errorlevel% neq 0 (
     echo.
     echo [ERROR] Build failed. See output above for details.

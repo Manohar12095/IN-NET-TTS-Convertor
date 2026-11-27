@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -58,6 +58,10 @@
     [data-theme="light"] .bg-orb { background: radial-gradient(circle, rgba(34,211,160,0.05) 0%, transparent 70%); }
     [data-theme="light"] .bg-grid { background-image: radial-gradient(rgba(79,140,255,0.08) 1px, transparent 1px); }
     [data-theme="light"] audio::-webkit-media-controls-panel { background: rgba(240,244,255,0.95); }
+    [data-theme="light"] .badge-blue   { color: #1d56c4; background: rgba(45,107,228,0.1); }
+    [data-theme="light"] .badge-green  { color: #0a875a; background: rgba(13,168,112,0.1); }
+    [data-theme="light"] .badge-purple { color: #5b3fd4; background: rgba(96,64,224,0.1); }
+    [data-theme="light"] .badge-gold   { color: #9a6700; background: rgba(192,128,0,0.12); }
 
     /* ── Reset ─────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -503,7 +507,7 @@
       </div>
     </a>
     <div class="nav-links">
-      <button class="nav-btn theme-btn" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">🌙</button>
+      <button class="nav-btn theme-btn" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">☀️</button>
       <a href="#about" class="nav-btn">ℹ️ About</a>
       <a href="mailto:innetcreations@gmail.com" class="nav-btn primary">✉️ Contact</a>
     </div>
@@ -779,7 +783,7 @@
 
   /* ── Theme toggle ────────────────────────────────────────── */
   (() => {
-    const saved = localStorage.getItem('tts_theme') || 'dark';
+    const saved = localStorage.getItem('tts_theme') || 'light';
     html.dataset.theme = saved;
     themeToggle.textContent = saved === 'light' ? '☀️' : '🌙';
   })();
