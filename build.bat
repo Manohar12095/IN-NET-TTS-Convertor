@@ -23,8 +23,8 @@ if %errorlevel% neq 0 (
 echo        OK
 
 :: ── Step 2: Install build deps ───────────────────────────
-echo [2/5] Installing build tools (pyinstaller, Pillow)...
-python -m pip install pyinstaller Pillow --quiet --no-warn-script-location
+echo [2/5] Installing build tools (pyinstaller, Pillow, pywebview)...
+python -m pip install pyinstaller Pillow pywebview --quiet --no-warn-script-location
 if %errorlevel% neq 0 (
     echo [ERROR] Failed to install build tools.
     pause & exit /b 1

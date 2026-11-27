@@ -10,20 +10,24 @@
 # OUTPUT: dist\InNetSTT.exe
 # ──────────────────────────────────────────────────────────────────────────────
 
-from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import collect_all, collect_data_files
 
 block_cipher = None
+
+wv_datas, wv_bins, wv_hidden = collect_all('webview')
+pn_datas, pn_bins, pn_hidden = collect_all('pythonnet')
+cl_datas, cl_bins, cl_hidden = collect_all('clr_loader')
 
 a = Analysis(
     ['app.py'],
     pathex=[],
-    binaries=[],
-    # Bundle templates, Assets, and certifi CA certificates for edge-tts HTTPS/WSS
+    binaries=wv_bins + pn_bins + cl_bins,
+    # Bundle templates, Assets, certifi CA certs, and pywebview/pythonnet runtime
     datas=[
         ('templates', 'templates'),
         ('Assets', 'Assets'),
-    ] + collect_data_files('certifi'),
-    # edge-tts uses several submodules that PyInstaller misses on auto-scan
+    ] + collect_data_files('certifi') + wv_datas + pn_datas + cl_datas,
+    # edge-tts and pywebview use dynamic submodules missed on auto-scan
     hiddenimports=[
         'edge_tts',
         'edge_tts.communicate',
@@ -31,12 +35,13 @@ a = Analysis(
         'edge_tts.data_classes',
         'edge_tts.drm',
         'edge_tts.exceptions',
-        'edge_tts.list_voices',
-        'edge_tts.models',
         'edge_tts.submaker',
         'edge_tts.typing',
         'edge_tts.util',
         'certifi',
+        'bottle',
+        'proxy_tools',
+        'clr',
         'aiohttp',
         'aiohttp.connector',
         'aiohttp.client',
@@ -50,7 +55,7 @@ a = Analysis(
         'werkzeug.serving',
         'werkzeug.debug',
         'click',
-    ],
+    ] + wv_hidden + pn_hidden + cl_hidden,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

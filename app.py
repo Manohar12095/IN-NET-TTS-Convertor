@@ -40,6 +40,7 @@ import asyncio
 import base64
 import logging
 import os
+import socket
 import sys
 import threading
 import time
@@ -670,6 +671,44 @@ VOICE_NAMES: set = {v["name"] for v in VOICES}
 
 
 # ---------------------------------------------------------------------------
+# Desktop networking helpers
+# ---------------------------------------------------------------------------
+def _is_port_free(host: str, port: int) -> bool:
+    """Return True if nothing is currently listening on `host:port`."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(0.25)
+        if s.connect_ex((host, port)) == 0:
+            return False
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind((host, port))
+            return True
+        except OSError:
+            return False
+
+
+def _pick_free_port(preferred: int = 5000) -> int:
+    """Pick `preferred` if free, else 5050..5099, else an OS-assigned port."""
+    for candidate in [preferred, *range(5050, 5100)]:
+        if _is_port_free("127.0.0.1", candidate):
+            return candidate
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("127.0.0.1", 0))
+        return s.getsockname()[1]
+
+
+def _wait_for_port(host: str, port: int, timeout: float = 6.0) -> None:
+    """Wait until Flask accepts TCP connections on `host:port`."""
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.2)
+            if s.connect_ex((host, port)) == 0:
+                return
+        time.sleep(0.08)
+
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -683,6 +722,12 @@ if __name__ == "__main__":
         _webview = None
         _use_webview = False
 
+    run_port = (
+        int(os.environ["PORT"])
+        if os.environ.get("PORT")
+        else (_pick_free_port(PORT) if _webview and _use_webview else PORT)
+    )
+
     banner = (
         f"\n[{APP_NAME}]  v{APP_VERSION}\n"
         f"   Created by {CREATOR} | {CONTACT}\n"
@@ -692,13 +737,13 @@ if __name__ == "__main__":
 
     if _webview and _use_webview:
         def _run_flask() -> None:
-            app.run(debug=False, use_reloader=False, port=PORT, host="127.0.0.1")
+            app.run(debug=False, use_reloader=False, port=run_port, host="127.0.0.1")
 
         flask_thread = threading.Thread(target=_run_flask, daemon=True)
         flask_thread.start()
-        time.sleep(1.2)
+        _wait_for_port("127.0.0.1", run_port)
 
-        print(banner + "   Launching desktop window…\n")
+        print(banner + f"   Launching desktop window on port {run_port}…\n")
 
         _icon_path = os.path.join(
             getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__))),
@@ -706,20 +751,32 @@ if __name__ == "__main__":
         )
         _icon_arg = _icon_path if os.path.isfile(_icon_path) else None
 
+        _storage_dir = os.path.join(
+            os.environ.get("LOCALAPPDATA") or os.path.dirname(AUDIO_DIR),
+            "InNetTTS", "webview_data",
+        )
+        os.makedirs(_storage_dir, exist_ok=True)
+        _webview.settings["ALLOW_DOWNLOADS"] = True
+
         window = _webview.create_window(
             title=f"{APP_NAME} — IN NET CREATIONS",
-            url=f"http://127.0.0.1:{PORT}",
+            url=f"http://127.0.0.1:{run_port}",
             width=1200, height=840,
             min_size=(860, 640),
             resizable=True, text_select=True,
         )
         try:
-            _webview.start(icon=_icon_arg, debug=False)
+            _webview.start(
+                icon=_icon_arg,
+                debug=False,
+                private_mode=False,
+                storage_path=_storage_dir,
+            )
         except TypeError:
             _webview.start(debug=False)
     else:
         if not os.environ.get("INNET_NO_BROWSER"):
-            threading.Timer(1.2, lambda: webbrowser.open(f"http://127.0.0.1:{PORT}")).start()
+            threading.Timer(1.2, lambda: webbrowser.open(f"http://127.0.0.1:{run_port}")).start()
 
-        print(banner + f"   Running at: http://127.0.0.1:{PORT}\n")
-        app.run(debug=False, use_reloader=False, port=PORT, host="0.0.0.0")
+        print(banner + f"   Running at: http://127.0.0.1:{run_port}\n")
+        app.run(debug=False, use_reloader=False, port=run_port, host="0.0.0.0")
