@@ -1,18 +1,20 @@
 Visit at : https://in-net-stt-convertor.vercel.app
 
-# IN NET STT Convertor
+# TTS (IN NET CREATIONS)
 
-**IN NET STT Convertor** is a powerful Text-to-Speech (TTS) application that transforms any text into natural, expressive speech. Built using Microsoft Edge Neural TTS voices, this tool supports 70+ languages and offers a simple, beautiful desktop interface.
+**TTS (IN NET CREATIONS)** is a powerful Text-to-Speech (TTS) application that transforms any text into natural, expressive speech. Built using Microsoft Edge Neural TTS voices, this tool supports 70+ languages and offers a simple, beautiful desktop and web interface.
 
 ---
 
 ## 🌟 Features
 
-- **70+ Languages & Hundreds of Voices:** Access high-quality Microsoft Edge Neural TTS voices.
-- **Adjustable Speech Parameters:** Customize the reading speed and pitch to fit your needs.
-- **Beautiful Glassmorphism UI:** Features a sleek dark theme, animated gradient backgrounds, and intuitive micro-interactions.
+- **70+ Languages & Hundreds of Voices:** Access high-quality Microsoft Edge Neural TTS voices (`edge-tts>=7.3.1`).
+- **Search, Language & Gender Filters + Favorites:** Quickly find and star your favorite voices (saved in `localStorage`).
+- **Adjustable Speech Parameters:** Customize the reading speed and pitch, preview voices, and reset in one click.
+- **Recent Generations History:** Replay or download your last 5 generated clips right from the UI.
+- **Dark & Light Theme:** Toggle between dark glassmorphism and clean light mode.
 - **Native Desktop App:** Runs as a standalone Windows desktop app without needing a web browser tab (powered by `pywebview`).
-- **One-Click Download:** Download generated audio as an `.mp3` file instantly.
+- **One-Click Download & Copy Link:** Download generated audio as an `.mp3` file or copy the playback link.
 - **Free Forever:** No API keys or subscriptions required.
 
 ---
@@ -67,7 +69,7 @@ If you make changes to the code and want to rebuild the standalone `.exe`:
 
 ## 📞 About the Creator
 
-**Created by:** Manohar
+**Created by:** Manohar.S
 **Powered by:** IN NET CREATIONS
 
 Building smart, accessible tools for everyone. Crafting the future, one app at a time.
