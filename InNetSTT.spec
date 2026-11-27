@@ -1,6 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 # ──────────────────────────────────────────────────────────────────────────────
-# IN NET STT Convertor — PyInstaller Spec
+# TTS (IN NET CREATIONS) — PyInstaller Spec
 # Produces a single-file Windows .exe with no console window.
 #
 # BUILD:
@@ -16,9 +16,10 @@ a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
-    # Bundle the templates folder so Flask can find index.html at runtime
+    # Bundle templates and Assets so Flask can serve index.html and logo.png at runtime
     datas=[
         ('templates', 'templates'),
+        ('Assets', 'Assets'),
     ],
     # edge-tts uses several submodules that PyInstaller misses on auto-scan
     hiddenimports=[

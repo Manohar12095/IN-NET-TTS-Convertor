@@ -1,13 +1,13 @@
 @echo off
-title IN NET STT Convertor — Launcher
+title TTS (IN NET CREATIONS) — Launcher
 color 0B
 cls
 
 echo.
 echo  ============================================================
-echo   IN NET STT Convertor
+echo   TTS (IN NET CREATIONS)
 echo   Powered by IN NET CREATIONS
-echo   Created by Manohar  ^|  innetcreations@gmail.com
+echo   Created by Manohar.S  ^|  innetcreations@gmail.com
 echo  ============================================================
 echo.
 
@@ -22,12 +22,12 @@ if %errorlevel% neq 0 (
 )
 echo        Python found. OK
 
-:: ── Install / verify dependencies ─────────────────────────
-echo [2/3] Checking dependencies (flask, edge-tts)...
-python -c "import flask, edge_tts" >nul 2>&1
+:: ── Install / upgrade dependencies ────────────────────────
+echo [2/3] Checking dependencies (flask, edge-tts>=7.3.1)...
+python -c "import flask, edge_tts; v=tuple(int(x) for x in edge_tts.__version__.split('.')[:3]); assert v >= (7, 3, 1)" >nul 2>&1
 if %errorlevel% neq 0 (
-    echo        Installing dependencies...
-    pip install flask edge-tts --quiet --no-warn-script-location
+    echo        Installing / upgrading dependencies...
+    python -m pip install -r "%~dp0requirements.txt" --upgrade --quiet --no-warn-script-location
     if %errorlevel% neq 0 (
         echo [ERROR] Failed to install dependencies. Check your internet connection and try again.
         pause
@@ -37,7 +37,7 @@ if %errorlevel% neq 0 (
 echo        Dependencies OK
 
 :: ── Launch Flask server ────────────────────────────────────
-echo [3/3] Starting IN NET STT Convertor...
+echo [3/3] Starting TTS (IN NET CREATIONS)...
 echo.
 echo  ============================================================
 echo   Access at: http://127.0.0.1:5000

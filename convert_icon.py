@@ -13,12 +13,5 @@ img = Image.open(SRC).convert("RGBA")
 
 # Windows needs multiple sizes in one .ico for crisp display at every zoom level
 sizes = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
-imgs = [img.resize(s, Image.LANCZOS) for s in sizes]
-
-imgs[0].save(
-    DST,
-    format="ICO",
-    sizes=sizes,
-    append_images=imgs[1:],
-)
+img.save(DST, format="ICO", sizes=sizes)
 print(f"Saved  {DST}  ({DST.stat().st_size // 1024} KB)")

@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IN NET STT Convertor — Text to Speech</title>
-  <meta name="description" content="IN NET STT Convertor — Convert text to natural-sounding speech using Microsoft Edge TTS voices. Created by Manohar, powered by IN NET CREATIONS." />
+  <title>TTS (IN NET CREATIONS) — Text to Speech</title>
+  <link rel="icon" type="image/png" href="/assets/logo.png" />
+  <meta name="description" content="TTS by IN NET CREATIONS — Convert text to natural-sounding speech using Microsoft Edge Neural TTS. Created by Manohar.S." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ── Design Tokens ─────────────────────────────────────── */
+    /* ── Design Tokens: Dark (default) ─────────────────────────── */
     :root {
       --bg: #04060f;
       --panel: rgba(14, 18, 32, 0.85);
@@ -29,46 +30,59 @@
       --radius-sm: 10px;
       --shadow: 0 8px 40px rgba(0,0,0,0.55);
       --glass: rgba(255,255,255,0.04);
+      --input-bg: rgba(5, 8, 18, 0.7);
     }
 
-    /* ── Reset ─────────────────────────────────────────────── */
+    /* ── Design Tokens: Light ───────────────────────────────────── */
+    [data-theme="light"] {
+      --bg: #f0f4ff;
+      --panel: rgba(255, 255, 255, 0.92);
+      --panel-solid: #ffffff;
+      --border: rgba(79, 140, 255, 0.18);
+      --border-bright: rgba(79, 140, 255, 0.45);
+      --text: #1a2040;
+      --text-dim: #4a5375;
+      --text-muted: #8a94b0;
+      --accent: #2d6be4;
+      --accent2: #6040e0;
+      --accent-glow: rgba(45, 107, 228, 0.2);
+      --green: #0da870;
+      --red: #e03050;
+      --gold: #c08000;
+      --shadow: 0 8px 40px rgba(0,0,0,0.12);
+      --glass: rgba(79,140,255,0.05);
+      --input-bg: rgba(255,255,255,0.85);
+    }
+    [data-theme="light"] .bg-scene::before { background: radial-gradient(circle, rgba(79,140,255,0.08) 0%, transparent 70%); }
+    [data-theme="light"] .bg-scene::after  { background: radial-gradient(circle, rgba(123,95,255,0.06) 0%, transparent 70%); }
+    [data-theme="light"] .bg-orb { background: radial-gradient(circle, rgba(34,211,160,0.05) 0%, transparent 70%); }
+    [data-theme="light"] .bg-grid { background-image: radial-gradient(rgba(79,140,255,0.08) 1px, transparent 1px); }
+    [data-theme="light"] audio::-webkit-media-controls-panel { background: rgba(240,244,255,0.95); }
+
+    /* ── Reset ─────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       font-family: 'Inter', -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; overflow-x: hidden;
+      transition: background 0.35s, color 0.35s;
     }
 
-    /* ── Animated Background ───────────────────────────────── */
-    .bg-scene {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
+    /* ── Animated Background ─────────────────────────────────── */
+    .bg-scene { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
     .bg-scene::before {
-      content: '';
-      position: absolute;
-      width: 900px; height: 900px;
+      content: ''; position: absolute; width: 900px; height: 900px;
       background: radial-gradient(circle, rgba(79,140,255,0.18) 0%, transparent 70%);
-      top: -200px; left: -200px;
-      animation: drift1 18s ease-in-out infinite alternate;
+      top: -200px; left: -200px; animation: drift1 18s ease-in-out infinite alternate;
     }
     .bg-scene::after {
-      content: '';
-      position: absolute;
-      width: 700px; height: 700px;
+      content: ''; position: absolute; width: 700px; height: 700px;
       background: radial-gradient(circle, rgba(123,95,255,0.15) 0%, transparent 70%);
-      bottom: -100px; right: -100px;
-      animation: drift2 22s ease-in-out infinite alternate;
+      bottom: -100px; right: -100px; animation: drift2 22s ease-in-out infinite alternate;
     }
     .bg-orb {
-      position: absolute;
-      width: 500px; height: 500px;
+      position: absolute; width: 500px; height: 500px;
       background: radial-gradient(circle, rgba(34,211,160,0.1) 0%, transparent 70%);
       top: 40%; left: 50%; transform: translate(-50%, -50%);
       animation: drift3 16s ease-in-out infinite alternate;
@@ -76,617 +90,399 @@
     @keyframes drift1 { 0%{transform:translate(0,0)} 100%{transform:translate(80px,60px)} }
     @keyframes drift2 { 0%{transform:translate(0,0)} 100%{transform:translate(-60px,80px)} }
     @keyframes drift3 { 0%{transform:translate(-50%,-50%) scale(1)} 100%{transform:translate(-50%,-50%) scale(1.3)} }
-
-    /* Grid dots */
     .bg-grid {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      background-image:
-        radial-gradient(rgba(79,140,255,0.12) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
+      position: fixed; inset: 0; z-index: 0;
+      background-image: radial-gradient(rgba(79,140,255,0.12) 1px, transparent 1px);
+      background-size: 40px 40px; pointer-events: none;
     }
 
-    /* ── Layout ────────────────────────────────────────────── */
+    /* ── Layout ─────────────────────────────────────────────── */
     .page {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      position: relative; z-index: 1; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
       padding: 0 16px 80px;
     }
 
-    /* ── Top Nav ───────────────────────────────────────────── */
+    /* ── Navbar ──────────────────────────────────────────────── */
     .navbar {
-      width: 100%;
-      max-width: 860px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      width: 100%; max-width: 900px;
+      display: flex; align-items: center; justify-content: space-between;
       padding: 24px 0 20px;
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
     .brand-icon {
-      width: 40px; height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      width: 46px; height: 46px; border-radius: 12px;
+      background: #000; border: 1px solid var(--border-bright);
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      box-shadow: 0 0 20px var(--accent-glow);
-      flex-shrink: 0;
+      padding: 3px; overflow: hidden;
+      box-shadow: 0 0 20px var(--accent-glow); flex-shrink: 0;
     }
-    .brand-text { line-height: 1; }
-    .brand-text .bname {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.3px;
+    .brand-icon img, .about-icon img {
+      width: 100%; height: 100%; object-fit: contain; display: block;
     }
-    .brand-text .btag {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--accent);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
+    .brand-text { line-height: 1.25; }
+    .brand-text .bname { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; }
+    .brand-text .btag  { font-size: 10px; font-weight: 500; color: var(--accent); letter-spacing: 0.5px; text-transform: uppercase; }
     .nav-links { display: flex; align-items: center; gap: 8px; }
     .nav-btn {
-      background: var(--glass);
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      background: var(--glass); border: 1px solid var(--border);
+      color: var(--text-dim); font-family: inherit; font-size: 13px; font-weight: 500;
+      padding: 8px 16px; border-radius: 50px; cursor: pointer; transition: all 0.2s;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
     }
-    .nav-btn:hover {
-      background: rgba(79,140,255,0.12);
-      border-color: var(--border-bright);
-      color: var(--text);
-    }
-    .nav-btn.primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border-color: transparent;
-      color: #fff;
-      font-weight: 600;
-    }
+    .nav-btn:hover { background: rgba(79,140,255,0.12); border-color: var(--border-bright); color: var(--text); }
+    .nav-btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent; color: #fff; font-weight: 600; }
     .nav-btn.primary:hover { opacity: 0.88; }
+    .theme-btn { font-size: 15px; padding: 8px 11px; }
 
-    /* ── Hero Header ───────────────────────────────────────── */
-    .hero {
-      width: 100%;
-      max-width: 860px;
-      text-align: center;
-      padding: 40px 0 48px;
-    }
+    /* ── Hero ─────────────────────────────────────────────────── */
+    .hero { width: 100%; max-width: 900px; text-align: center; padding: 36px 0 44px; }
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(79,140,255,0.1);
-      border: 1px solid rgba(79,140,255,0.3);
-      border-radius: 50px;
-      padding: 5px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-      letter-spacing: 0.5px;
-      margin-bottom: 20px;
-      text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(79,140,255,0.1); border: 1px solid rgba(79,140,255,0.3);
+      border-radius: 50px; padding: 5px 14px; font-size: 12px; font-weight: 600;
+      color: var(--accent); letter-spacing: 0.5px; margin-bottom: 20px; text-transform: uppercase;
     }
-    .hero-badge span { font-size: 10px; }
     .hero h1 {
-      font-size: clamp(32px, 6vw, 58px);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -1.5px;
+      font-size: clamp(26px, 5vw, 50px); font-weight: 800;
+      line-height: 1.1; letter-spacing: -1.5px;
       background: linear-gradient(135deg, #ffffff 30%, #a8c4ff 60%, #8b8fff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 14px;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 6px;
     }
-    .hero p {
-      font-size: 16px;
-      color: var(--text-dim);
-      max-width: 520px;
-      margin: 0 auto;
-      line-height: 1.65;
+    [data-theme="light"] .hero h1 {
+      background: linear-gradient(135deg, #1a2040 30%, #2d6be4 60%, #6040e0 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      margin-top: 32px;
-    }
+    .hero-creator { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+    .hero-creator span { color: var(--accent); font-weight: 600; }
+    .hero p { font-size: 15px; color: var(--text-dim); max-width: 520px; margin: 0 auto; line-height: 1.65; }
+    .hero-stats { display: flex; justify-content: center; gap: 32px; margin-top: 28px; }
     .stat { text-align: center; }
-    .stat-val {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .stat-label {
-      font-size: 11px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+    .stat-val   { font-size: 22px; font-weight: 700; color: var(--text); }
+    .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* ── Main Card ─────────────────────────────────────────── */
+    /* ── Main Card ─────────────────────────────────────────────── */
     .card {
-      width: 100%;
-      max-width: 860px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 36px;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      width: 100%; max-width: 900px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 32px 36px;
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
-    /* ── Form Grid ─────────────────────────────────────────── */
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
+    /* ── Form Grid ─────────────────────────────────────────────── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .form-group { display: flex; flex-direction: column; gap: 8px; }
     .form-group.full { grid-column: 1 / -1; }
 
     label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 11px; font-weight: 700; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      display: flex; align-items: center; gap: 6px;
     }
     label .req { color: var(--red); }
 
     /* Inputs */
-    .input-wrap { position: relative; }
     textarea, select, input[type="text"] {
-      width: 100%;
-      background: rgba(5, 8, 18, 0.7);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 13px 16px;
-      font-size: 14px;
-      font-family: inherit;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      outline: none;
-      appearance: none;
+      width: 100%; background: var(--input-bg); color: var(--text);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 12px 16px; font-size: 14px; font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s; outline: none; appearance: none;
     }
     textarea:focus, select:focus, input[type="text"]:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(79,140,255,0.15);
+      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,140,255,0.15);
     }
-    textarea {
-      min-height: 160px;
-      resize: vertical;
-      line-height: 1.6;
+    textarea { min-height: 148px; resize: vertical; line-height: 1.6; }
+
+    .textarea-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 4px; gap: 8px; flex-wrap: wrap;
     }
-    .char-count {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-align: right;
-      margin-top: 4px;
-    }
+    .char-count { font-size: 11px; color: var(--text-muted); }
     .char-count.warn { color: var(--gold); }
     .char-count.over { color: var(--red); }
+    .clear-text-btn {
+      background: none; border: none; color: var(--text-muted);
+      font-size: 11px; cursor: pointer; font-family: inherit; padding: 0;
+      transition: color 0.15s;
+    }
+    .clear-text-btn:hover { color: var(--red); }
 
-    /* Voice search */
+    /* Voice search box */
     .voice-search {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(5, 8, 18, 0.7);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+      background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 14px;
     }
-    .voice-search:focus-within {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(79,140,255,0.15);
-    }
-    .voice-search .search-icon { color: var(--text-muted); font-size: 14px; flex-shrink: 0; }
+    .voice-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,140,255,0.15); }
     .voice-search input {
-      background: none;
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-size: 13px;
-      font-family: inherit;
-      width: 100%;
-      padding: 0;
+      background: none; border: none; outline: none;
+      color: var(--text); font-size: 13px; font-family: inherit; width: 100%; padding: 0;
     }
-    .voice-count {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
+    .voice-count { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
     /* Select arrow */
     .select-wrap { position: relative; }
     .select-wrap::after {
-      content: '▾';
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-dim);
-      pointer-events: none;
-      font-size: 12px;
+      content: '▾'; position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-dim); pointer-events: none; font-size: 12px;
     }
 
-    /* Voice meta badge */
-    .voice-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 6px;
-      flex-wrap: wrap;
+    /* Voice label row with fav controls */
+    .voice-label-row {
+      display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
     }
+    .voice-label-row label { margin-bottom: 0; flex: 1; }
+    .fav-only-btn {
+      background: var(--glass); border: 1px solid var(--border);
+      color: var(--text-muted); font-family: inherit; font-size: 11px; font-weight: 600;
+      padding: 4px 10px; border-radius: 50px; cursor: pointer; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+    }
+    .fav-only-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .fav-only-btn.active { background: rgba(255,200,81,0.12); border-color: rgba(255,200,81,0.4); color: var(--gold); }
+    .fav-star-btn {
+      background: none; border: none; font-size: 16px; cursor: pointer;
+      color: var(--text-muted); padding: 2px 4px; transition: color 0.2s, transform 0.2s;
+      line-height: 1;
+    }
+    .fav-star-btn:hover { color: var(--gold); transform: scale(1.2); }
+    .fav-star-btn.active { color: var(--gold); }
+
+    /* Voice meta */
+    .voice-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
     .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 10px;
-      border-radius: 50px;
-      line-height: 1.5;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 500; padding: 3px 10px;
+      border-radius: 50px; line-height: 1.5;
     }
-    .badge-blue { background: rgba(79,140,255,0.12); border: 1px solid rgba(79,140,255,0.25); color: #7aadff; }
-    .badge-green { background: rgba(34,211,160,0.1); border: 1px solid rgba(34,211,160,0.25); color: #22d3a0; }
-    .badge-purple { background: rgba(123,95,255,0.1); border: 1px solid rgba(123,95,255,0.25); color: #a78bfa; }
+    .badge-blue   { background: rgba(79,140,255,0.12);  border: 1px solid rgba(79,140,255,0.25);  color: #7aadff; }
+    .badge-green  { background: rgba(34,211,160,0.1);   border: 1px solid rgba(34,211,160,0.25);  color: #22d3a0; }
+    .badge-purple { background: rgba(123,95,255,0.1);   border: 1px solid rgba(123,95,255,0.25);  color: #a78bfa; }
+    .badge-gold   { background: rgba(255,200,81,0.1);   border: 1px solid rgba(255,200,81,0.25);  color: var(--gold); }
 
-    /* Speed/Pitch */
+    /* Sliders */
     .slider-group { display: flex; flex-direction: column; gap: 6px; }
     .slider-row { display: flex; align-items: center; gap: 12px; }
     input[type="range"] {
-      -webkit-appearance: none;
-      flex: 1;
-      height: 4px;
-      background: var(--border);
-      border-radius: 50px;
-      outline: none;
-      cursor: pointer;
+      -webkit-appearance: none; flex: 1; height: 4px;
+      background: var(--border); border-radius: 50px; outline: none; cursor: pointer;
     }
     input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px; height: 16px;
-      border-radius: 50%;
+      -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      box-shadow: 0 0 8px var(--accent-glow);
-      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-glow); cursor: pointer;
     }
-    .slider-val {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-      min-width: 36px;
-      text-align: right;
-    }
+    .slider-val { font-size: 12px; font-weight: 600; color: var(--accent); min-width: 42px; text-align: right; }
 
-    /* ── Controls ──────────────────────────────────────────── */
-    .controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-top: 28px;
-      flex-wrap: wrap;
-    }
+    /* ── Controls ─────────────────────────────────────────────── */
+    .controls { display: flex; gap: 10px; align-items: center; margin-top: 22px; flex-wrap: wrap; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 600;
-      padding: 13px 24px;
-      border-radius: var(--radius-sm);
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: inherit; font-size: 14px; font-weight: 600;
+      padding: 11px 20px; border-radius: var(--radius-sm);
+      border: none; cursor: pointer; transition: all 0.2s;
+      position: relative; overflow: hidden; white-space: nowrap;
     }
     .btn::after {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-      opacity: 0;
-      transition: opacity 0.2s;
+      opacity: 0; transition: opacity 0.2s;
     }
     .btn:hover::after { opacity: 1; }
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(79,140,255,0.4);
+      color: #fff; box-shadow: 0 4px 20px rgba(79,140,255,0.4);
     }
     .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(79,140,255,0.5); }
     .btn-primary:active { transform: translateY(0); }
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    .btn-secondary {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-    }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-secondary { background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-dim); }
     .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: var(--border-bright); color: var(--text); }
     .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-sm { padding: 8px 14px; font-size: 12px; }
+    .shortcut-hint { font-size: 10px; opacity: 0.65; font-weight: 400; }
 
     /* Status */
     .status-area { display: flex; align-items: center; gap: 8px; }
-    .status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      flex-shrink: 0;
-    }
-    .status-dot.pulse {
-      background: var(--accent);
-      animation: pulse 1s infinite;
-    }
-    .status-dot.ok { background: var(--green); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; }
+    .status-dot.pulse { background: var(--accent); animation: pulse 1s infinite; }
+    .status-dot.ok  { background: var(--green); }
     .status-dot.err { background: var(--red); }
-    @keyframes pulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(79,140,255,0.5); }
-      50% { box-shadow: 0 0 0 5px rgba(79,140,255,0); }
-    }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(79,140,255,0.5)} 50%{box-shadow:0 0 0 5px rgba(79,140,255,0)} }
     .status-text { font-size: 13px; color: var(--text-dim); }
     .status-text.error { color: var(--red); }
-
-    /* Waveform animation */
-    .waveform {
-      display: none;
-      align-items: center;
-      gap: 3px;
-      height: 20px;
-    }
+    .waveform { display: none; align-items: center; gap: 3px; height: 20px; }
     .waveform.active { display: flex; }
-    .wave-bar {
-      width: 3px;
-      border-radius: 2px;
-      background: var(--accent);
+    .wave-bar { width: 3px; border-radius: 2px; background: var(--accent); }
+    .wave-bar:nth-child(1){animation:wave .8s ease-in-out infinite;height:8px}
+    .wave-bar:nth-child(2){animation:wave .8s ease-in-out .1s infinite;height:16px}
+    .wave-bar:nth-child(3){animation:wave .8s ease-in-out .2s infinite;height:12px}
+    .wave-bar:nth-child(4){animation:wave .8s ease-in-out .3s infinite;height:20px}
+    .wave-bar:nth-child(5){animation:wave .8s ease-in-out .15s infinite;height:14px}
+    .wave-bar:nth-child(6){animation:wave .8s ease-in-out .25s infinite;height:10px}
+    @keyframes wave{0%,100%{transform:scaleY(.4);opacity:.6}50%{transform:scaleY(1);opacity:1}}
+
+    /* Indeterminate progress bar during synthesis */
+    .progress-track {
+      width: 100%; height: 3px; border-radius: 99px;
+      background: var(--border); overflow: hidden;
+      margin-top: 14px; display: none;
     }
-    .wave-bar:nth-child(1) { animation: wave 0.8s ease-in-out infinite; height: 8px; }
-    .wave-bar:nth-child(2) { animation: wave 0.8s ease-in-out 0.1s infinite; height: 16px; }
-    .wave-bar:nth-child(3) { animation: wave 0.8s ease-in-out 0.2s infinite; height: 12px; }
-    .wave-bar:nth-child(4) { animation: wave 0.8s ease-in-out 0.3s infinite; height: 20px; }
-    .wave-bar:nth-child(5) { animation: wave 0.8s ease-in-out 0.15s infinite; height: 14px; }
-    .wave-bar:nth-child(6) { animation: wave 0.8s ease-in-out 0.25s infinite; height: 10px; }
-    @keyframes wave {
-      0%,100% { transform: scaleY(0.4); opacity: 0.6; }
-      50% { transform: scaleY(1); opacity: 1; }
+    .progress-track.active { display: block; }
+    .progress-bar {
+      width: 38%; height: 100%; border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--green));
+      animation: indeterminate 1.2s ease-in-out infinite;
+    }
+    @keyframes indeterminate {
+      0%   { transform: translateX(-110%); }
+      100% { transform: translateX(300%); }
     }
 
-    /* ── Audio Player ───────────────────────────────────────── */
-    .player-section {
-      margin-top: 24px;
-      display: none;
-      animation: slideUp 0.3s ease;
-    }
+    /* ── Audio Player ─────────────────────────────────────────── */
+    .player-section { margin-top: 18px; display: none; animation: slideUp .3s ease; }
     .player-section.visible { display: block; }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
     .player-card {
-      background: rgba(79,140,255,0.05);
-      border: 1px solid rgba(79,140,255,0.15);
-      border-radius: var(--radius-sm);
-      padding: 20px;
+      background: rgba(79,140,255,0.05); border: 1px solid rgba(79,140,255,0.15);
+      border-radius: var(--radius-sm); padding: 16px 18px;
     }
     .player-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; gap: 8px; flex-wrap: wrap;
     }
     .player-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 11px; font-weight: 700; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.7px;
+      display: flex; align-items: center; gap: 6px;
     }
     .player-title .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
-    audio {
-      width: 100%;
-      height: 40px;
-      border-radius: 8px;
-      outline: none;
-    }
+    .player-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    audio { width: 100%; height: 40px; border-radius: 8px; outline: none; display: block; margin-top: 4px; }
     audio::-webkit-media-controls-panel { background: rgba(14,18,32,0.9); }
 
-    /* ── Section Divider ───────────────────────────────────── */
+    /* ── History Card ─────────────────────────────────────────── */
+    .history-card {
+      width: 100%; max-width: 900px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 22px 32px;
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--shadow); margin-top: 18px; display: none;
+    }
+    .history-card.visible { display: block; animation: slideUp .3s ease; }
+    .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .history-title {
+      font-size: 12px; font-weight: 700; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .history-clear {
+      background: none; border: none; font-size: 11px; color: var(--text-muted);
+      cursor: pointer; font-family: inherit; transition: color .15s; padding: 4px 8px;
+    }
+    .history-clear:hover { color: var(--red); }
+    .history-items { display: flex; flex-direction: column; gap: 10px; }
+    .history-item {
+      padding: 12px 14px; background: var(--glass);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      animation: slideUp .2s ease;
+    }
+    .history-item-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+    .history-time { font-size: 10px; color: var(--text-muted); margin-left: auto; }
+    .history-text { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; font-style: italic; line-height: 1.4; }
+    .history-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .history-audio { height: 30px; flex: 1; min-width: 140px; border-radius: 6px; }
+
+    /* ── Divider ──────────────────────────────────────────────── */
     .divider {
-      width: 100%;
-      max-width: 860px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin: 48px 0 0;
+      width: 100%; max-width: 900px;
+      display: flex; align-items: center; gap: 16px; margin: 42px 0 0;
     }
     .divider-line { flex: 1; height: 1px; background: var(--border); }
-    .divider-text { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    .divider-text { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-    /* ── About Us Card ─────────────────────────────────────── */
+    /* ── About Card ───────────────────────────────────────────── */
     .about-card {
-      width: 100%;
-      max-width: 860px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 36px;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: var(--shadow);
-      margin-top: 24px;
+      width: 100%; max-width: 900px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 32px 36px;
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--shadow); margin-top: 20px;
     }
-    .about-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
-    }
+    .about-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
     .about-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      width: 60px; height: 60px; border-radius: 14px;
+      background: #000; border: 1px solid var(--border-bright);
       display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-      box-shadow: 0 0 24px var(--accent-glow);
-      flex-shrink: 0;
+      padding: 4px; overflow: hidden;
+      box-shadow: 0 0 24px var(--accent-glow); flex-shrink: 0;
     }
-    .about-header h2 {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.3px;
-    }
-    .about-header p {
-      font-size: 13px;
-      color: var(--text-dim);
-      margin-top: 2px;
-    }
-    .about-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
+    .about-header h2 { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+    .about-header p  { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+    .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
     .about-item {
-      background: var(--glass);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px 20px;
-      transition: border-color 0.2s;
+      background: var(--glass); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 16px; transition: border-color .2s;
     }
     .about-item:hover { border-color: var(--border-bright); }
     .about-item .ai-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 10px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 5px;
+      display: flex; align-items: center; gap: 5px;
     }
-    .about-item .ai-label .icon { font-size: 13px; }
-    .about-item .ai-value {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-    }
-    .about-item .ai-value a {
-      color: var(--accent);
-      text-decoration: none;
-    }
+    .about-item .ai-value { font-size: 14px; font-weight: 600; color: var(--text); }
+    .about-item .ai-value a { color: var(--accent); text-decoration: none; }
     .about-item .ai-value a:hover { text-decoration: underline; }
     .powered-by {
-      margin-top: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px;
+      margin-top: 18px; display: flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 12px;
       background: linear-gradient(135deg, rgba(79,140,255,0.06), rgba(123,95,255,0.06));
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      border: 1px solid var(--border); border-radius: 12px;
     }
     .powered-by span { font-size: 13px; color: var(--text-muted); }
     .powered-by strong {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 13px; font-weight: 700;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
 
-    /* ── Footer ────────────────────────────────────────────── */
+    /* ── Footer ───────────────────────────────────────────────── */
     footer {
-      width: 100%;
-      max-width: 860px;
-      margin-top: 40px;
-      padding: 20px 0;
+      width: 100%; max-width: 900px; margin-top: 36px; padding: 18px 0;
       border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: gap;
-      gap: 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;   /* BUG FIX: original had "flex-wrap: gap" (invalid) */
     }
     .footer-left { font-size: 12px; color: var(--text-muted); }
     .footer-right { font-size: 12px; color: var(--text-muted); display: flex; gap: 16px; }
-    .footer-right a { color: var(--text-dim); text-decoration: none; transition: color 0.15s; }
+    .footer-right a { color: var(--text-dim); text-decoration: none; transition: color .15s; }
     .footer-right a:hover { color: var(--accent); }
 
-    /* ── Toast ─────────────────────────────────────────────── */
+    /* ── Toast ────────────────────────────────────────────────── */
     .toast {
-      position: fixed;
-      bottom: 28px; right: 28px;
-      background: var(--panel-solid);
-      border: 1px solid var(--border-bright);
-      border-radius: 12px;
-      padding: 14px 20px;
-      font-size: 13px;
-      color: var(--text);
-      box-shadow: var(--shadow);
-      z-index: 1000;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.3s;
-      max-width: 300px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      position: fixed; bottom: 28px; right: 28px;
+      background: var(--panel-solid); border: 1px solid var(--border-bright);
+      border-radius: 12px; padding: 12px 18px; font-size: 13px; color: var(--text);
+      box-shadow: var(--shadow); z-index: 1000;
+      opacity: 0; transform: translateY(20px); transition: all .3s;
+      max-width: 320px; display: flex; align-items: flex-start; gap: 10px;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
     .toast.success { border-color: rgba(34,211,160,0.4); }
-    .toast.err { border-color: rgba(255,95,122,0.4); }
+    .toast.err     { border-color: rgba(255,95,122,0.4); }
 
-    /* ── Responsive ────────────────────────────────────────── */
+    /* ── Responsive ───────────────────────────────────────────── */
     @media (max-width: 640px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .card, .about-card { padding: 22px 18px; }
-      .hero h1 { letter-spacing: -0.5px; }
+      .form-grid  { grid-template-columns: 1fr; }
+      .card, .about-card, .history-card { padding: 18px 16px; }
+      .hero h1    { letter-spacing: -0.5px; }
       .hero-stats { gap: 20px; }
-      .navbar { padding: 16px 0; }
-      .controls { gap: 8px; }
-      footer { flex-direction: column; text-align: center; }
+      .navbar     { padding: 16px 0; }
+      .controls   { gap: 8px; }
+      footer      { flex-direction: column; text-align: center; }
+      .history-time { margin-left: 0; }
     }
   </style>
 </head>
@@ -697,91 +493,98 @@
 
 <div class="page">
 
-  <!-- ── Navbar ──────────────────────────────────────── -->
+  <!-- ── Navbar ──────────────────────────────────────────── -->
   <nav class="navbar" aria-label="Site Navigation">
     <a href="#" class="brand">
-      <div class="brand-icon">🎙️</div>
+      <div class="brand-icon"><img src="/assets/logo.png" alt="IN NET CREATIONS Logo" /></div>
       <div class="brand-text">
-        <div class="bname">IN NET STT</div>
-        <div class="btag">Convertor</div>
+        <div class="bname">TTS (IN NET CREATIONS)</div>
+        <div class="btag">by Manohar.S</div>
       </div>
     </a>
     <div class="nav-links">
-      <a href="#about" class="nav-btn">ℹ️ About Us</a>
+      <button class="nav-btn theme-btn" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">🌙</button>
+      <a href="#about" class="nav-btn">ℹ️ About</a>
       <a href="mailto:innetcreations@gmail.com" class="nav-btn primary">✉️ Contact</a>
     </div>
   </nav>
 
-  <!-- ── Hero ────────────────────────────────────────── -->
+  <!-- ── Hero ──────────────────────────────────────────────── -->
   <header class="hero">
     <div class="hero-badge"><span>🔊</span> Text to Speech Convertor</div>
-    <h1>IN NET STT Convertor</h1>
+    <h1>TTS (IN NET CREATIONS)</h1>
+    <div class="hero-creator">Created by <span>Manohar.S</span></div>
     <p>Transform any text into natural, expressive speech. Choose from hundreds of voices across 70+ languages — powered by Microsoft Edge Neural TTS.</p>
     <div class="hero-stats">
-      <div class="stat">
-        <div class="stat-val" id="voiceCountStat">—</div>
-        <div class="stat-label">Voices</div>
-      </div>
-      <div class="stat">
-        <div class="stat-val">70+</div>
-        <div class="stat-label">Languages</div>
-      </div>
-      <div class="stat">
-        <div class="stat-val">Free</div>
-        <div class="stat-label">Forever</div>
-      </div>
+      <div class="stat"><div class="stat-val" id="voiceCountStat">—</div><div class="stat-label">Voices</div></div>
+      <div class="stat"><div class="stat-val">70+</div><div class="stat-label">Languages</div></div>
+      <div class="stat"><div class="stat-val">Free</div><div class="stat-label">Forever</div></div>
     </div>
   </header>
 
-  <!-- ── Main Card ───────────────────────────────────── -->
+  <!-- ── Main Card ─────────────────────────────────────────── -->
   <main class="card" aria-label="Text to Speech Converter">
     <div class="form-grid">
 
       <!-- Text Input -->
       <div class="form-group full">
         <label for="text">✍️ Text to Speak <span class="req">*</span></label>
-        <div class="input-wrap">
-          <textarea
-            id="text"
-            placeholder="Type or paste your text here... (max 5000 characters)"
-            aria-required="true"
-            aria-label="Text to convert to speech"
-            maxlength="5000"
-          >Hello! Welcome to IN NET STT Convertor. This is a preview of how this voice sounds. Created by Manohar, powered by IN NET CREATIONS.</textarea>
+        <textarea
+          id="text"
+          placeholder="Type or paste your text here… (max 5,000 characters)"
+          aria-required="true"
+          aria-label="Text to convert to speech"
+          maxlength="5000"
+        >Hello! Welcome to TTS by IN NET CREATIONS. This is a preview of how this voice sounds. Created by Manohar.S, powered by IN NET CREATIONS.</textarea>
+        <div class="textarea-footer">
+          <div class="char-count" id="charCount">0 / 5,000 chars · 0 words</div>
+          <button class="clear-text-btn" id="clearTextBtn" title="Clear text">✕ Clear</button>
         </div>
-        <div class="char-count" id="charCount">178 / 5000 characters</div>
       </div>
 
-      <!-- Voice Filter -->
-      <div class="form-group">
+      <!-- Voice Search -->
+      <div class="form-group full">
         <label for="voiceSearch">🔍 Search Voice</label>
         <div class="voice-search">
-          <span class="search-icon">🔍</span>
+          <span style="color:var(--text-muted);font-size:14px;flex-shrink:0">🔍</span>
           <input
-            type="text"
-            id="voiceSearch"
-            placeholder="e.g. English, Female, Aria…"
+            type="text" id="voiceSearch"
+            placeholder="e.g. English, Female, Aria, Hindi, Tamil…"
             aria-label="Search for a voice by name or language"
           />
         </div>
         <div class="voice-count" id="voiceCount">Loading voices…</div>
       </div>
 
+      <!-- Language Filter -->
+      <div class="form-group">
+        <label for="langFilter">🌐 Language</label>
+        <div class="select-wrap">
+          <select id="langFilter" aria-label="Filter voices by language">
+            <option value="">All Languages</option>
+          </select>
+        </div>
+      </div>
+
       <!-- Gender Filter -->
       <div class="form-group">
-        <label for="genderFilter">⚧️ Filter by Gender</label>
+        <label for="genderFilter">⚧️ Gender</label>
         <div class="select-wrap">
           <select id="genderFilter" aria-label="Filter voices by gender">
             <option value="">All Genders</option>
-            <option value="Female">Female</option>
-            <option value="Male">Male</option>
+            <option value="Female">♀ Female</option>
+            <option value="Male">♂ Male</option>
           </select>
         </div>
       </div>
 
       <!-- Voice Select -->
       <div class="form-group full">
-        <label for="voice">🎤 Select Voice <span class="req">*</span></label>
+        <div class="voice-label-row">
+          <label for="voice">🎤 Select Voice <span class="req">*</span></label>
+          <button class="fav-only-btn" id="favOnlyBtn" title="Show only favorited voices">⭐ Favorites</button>
+          <button class="fav-star-btn" id="favStarBtn" title="Add/remove from favorites">☆</button>
+        </div>
         <div class="select-wrap">
           <select id="voice" aria-label="Choose a voice" aria-required="true"></select>
         </div>
@@ -806,17 +609,19 @@
         </div>
       </div>
 
-    </div>
+    </div><!-- /.form-grid -->
 
     <!-- Controls -->
     <div class="controls">
       <button class="btn btn-primary" id="playBtn" aria-label="Generate and play speech">
         <span id="playBtnIcon">▶</span>
         <span id="playBtnText">Generate &amp; Play</span>
+        <span class="shortcut-hint">Ctrl+↵</span>
       </button>
-      <button class="btn btn-secondary" id="downloadBtn" disabled aria-label="Download audio">
-        ⬇ Download MP3
-      </button>
+      <button class="btn btn-secondary btn-sm" id="previewBtn" title="Preview voice with a short sample phrase">🔈 Preview</button>
+      <button class="btn btn-secondary btn-sm" id="resetBtn" title="Reset all filters and sliders to defaults">↺ Reset</button>
+      <button class="btn btn-secondary btn-sm" id="downloadBtn" disabled aria-label="Download audio as MP3">⬇ Download MP3</button>
+      <button class="btn btn-secondary btn-sm" id="copyBtn" disabled title="Copy audio link to clipboard">🔗 Copy Link</button>
       <div class="status-area">
         <div class="status-dot" id="statusDot"></div>
         <div class="waveform" id="waveform">
@@ -828,12 +633,19 @@
       </div>
     </div>
 
+    <!-- Progress Bar -->
+    <div class="progress-track" id="progressTrack" aria-hidden="true">
+      <div class="progress-bar"></div>
+    </div>
+
     <!-- Player -->
     <div class="player-section" id="playerSection">
       <div class="player-card">
         <div class="player-header">
           <div class="player-title"><div class="dot"></div> Audio Output</div>
-          <span id="playerVoiceName" class="badge badge-blue" style="font-size:11px"></span>
+          <div class="player-actions">
+            <span id="playerVoiceName" class="badge badge-blue"></span>
+          </div>
         </div>
         <audio id="player" controls preload="none" aria-label="Generated speech audio"></audio>
       </div>
@@ -841,7 +653,16 @@
 
   </main>
 
-  <!-- ── About Us ─────────────────────────────────────── -->
+  <!-- ── History Card ───────────────────────────────────────── -->
+  <div class="history-card" id="historyCard" aria-label="Recent generations">
+    <div class="history-header">
+      <div class="history-title">🕐 Recent Generations</div>
+      <button class="history-clear" id="historyClearBtn">✕ Clear history</button>
+    </div>
+    <div class="history-items" id="historyList"></div>
+  </div>
+
+  <!-- ── About ──────────────────────────────────────────────── -->
   <div class="divider" aria-hidden="true">
     <div class="divider-line"></div>
     <span class="divider-text">About Us</span>
@@ -850,33 +671,31 @@
 
   <section class="about-card" id="about" aria-label="About Us">
     <div class="about-header">
-      <div class="about-icon">🏢</div>
+      <div class="about-icon"><img src="/assets/logo.png" alt="IN NET CREATIONS Logo" /></div>
       <div>
         <h2>About IN NET CREATIONS</h2>
         <p>Building smart, accessible tools for everyone.</p>
       </div>
     </div>
-
     <div class="about-grid">
       <div class="about-item">
-        <div class="ai-label"><span class="icon">👨‍💻</span> Creator</div>
-        <div class="ai-value">Manohar</div>
+        <div class="ai-label"><span>👨‍💻</span> Creator</div>
+        <div class="ai-value">Manohar.S</div>
       </div>
       <div class="about-item">
-        <div class="ai-label"><span class="icon">📌</span> Application</div>
-        <div class="ai-value">IN NET STT Convertor</div>
+        <div class="ai-label"><span>📌</span> Application</div>
+        <div class="ai-value">TTS (IN NET CREATIONS)</div>
       </div>
       <div class="about-item">
-        <div class="ai-label"><span class="icon">✉️</span> Contact</div>
+        <div class="ai-label"><span>✉️</span> Contact</div>
         <div class="ai-value"><a href="mailto:innetcreations@gmail.com">innetcreations@gmail.com</a></div>
       </div>
       <div class="about-item">
-        <div class="ai-label"><span class="icon">⚙️</span> Engine</div>
+        <div class="ai-label"><span>⚙️</span> Engine</div>
         <div class="ai-value">Microsoft Edge Neural TTS</div>
       </div>
     </div>
-
-    <div class="powered-by" style="margin-top:20px;">
+    <div class="powered-by">
       <span>🚀</span>
       <span>Powered by</span>
       <strong>IN NET CREATIONS</strong>
@@ -884,9 +703,9 @@
     </div>
   </section>
 
-  <!-- ── Footer ──────────────────────────────────────── -->
+  <!-- ── Footer ─────────────────────────────────────────────── -->
   <footer>
-    <div class="footer-left">© 2024 IN NET CREATIONS · All rights reserved · Created by Manohar</div>
+    <div class="footer-left">© <span id="footerYear"></span> IN NET CREATIONS · All rights reserved · Created by Manohar.S</div>
     <div class="footer-right">
       <a href="mailto:innetcreations@gmail.com">innetcreations@gmail.com</a>
       <a href="#about">About</a>
@@ -895,157 +714,331 @@
 
 </div><!-- /.page -->
 
-<!-- ── Toast ─────────────────────────────────────────── -->
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
 <script>
-  /* ── Element refs ─────────────────────────────────── */
-  const voiceSelect   = document.getElementById('voice');
-  const voiceSearch   = document.getElementById('voiceSearch');
-  const genderFilter  = document.getElementById('genderFilter');
-  const voiceMeta     = document.getElementById('voiceMeta');
-  const voiceCount    = document.getElementById('voiceCount');
-  const textArea      = document.getElementById('text');
-  const charCount     = document.getElementById('charCount');
-  const playBtn       = document.getElementById('playBtn');
-  const playBtnIcon   = document.getElementById('playBtnIcon');
-  const playBtnText   = document.getElementById('playBtnText');
-  const downloadBtn   = document.getElementById('downloadBtn');
-  const statusDot     = document.getElementById('statusDot');
-  const statusText    = document.getElementById('statusText');
-  const waveform      = document.getElementById('waveform');
-  const player        = document.getElementById('player');
-  const playerSection = document.getElementById('playerSection');
-  const playerVoice   = document.getElementById('playerVoiceName');
-  const rateSlider    = document.getElementById('rateSlider');
-  const rateVal       = document.getElementById('rateVal');
-  const rateLabel     = document.getElementById('rateLabel');
-  const pitchSlider   = document.getElementById('pitchSlider');
-  const pitchVal      = document.getElementById('pitchVal');
-  const pitchLabel    = document.getElementById('pitchLabel');
-  const toast         = document.getElementById('toast');
+  /* ── Constants ───────────────────────────────────────────── */
+  const MAX_CHARS = 5000;
+
+  /* ───────────────────────────────────────────────────────────
+     State  (all at MODULE scope — fixes the downloadUrl bug
+     where the original code declared it inside playSpeech()
+     so the download button always saw an empty string)
+  ─────────────────────────────────────────────────────────── */
+  let allVoices        = [];
+  let filteredVoices   = [];
+  let currentAudioUrl    = null;
+  let currentDownloadUrl = null;   // ← was let downloadUrlStr = '' inside playSpeech() — FIXED
+  let favorites   = JSON.parse(localStorage.getItem('tts_favorites') || '[]');
+  let historyItems = JSON.parse(sessionStorage.getItem('tts_history') || '[]')
+    .filter(item => item && item.audio_url && !item.audio_url.startsWith('blob:'));
+  let favOnlyActive = false;
+
+  /* ── Element refs ────────────────────────────────────────── */
+  const voiceSelect    = document.getElementById('voice');
+  const voiceSearch    = document.getElementById('voiceSearch');
+  const langFilter     = document.getElementById('langFilter');
+  const genderFilter   = document.getElementById('genderFilter');
+  const favOnlyBtn     = document.getElementById('favOnlyBtn');
+  const favStarBtn     = document.getElementById('favStarBtn');
+  const voiceMeta      = document.getElementById('voiceMeta');
+  const voiceCount     = document.getElementById('voiceCount');
+  const textArea       = document.getElementById('text');
+  const charCountEl    = document.getElementById('charCount');
+  const clearTextBtn   = document.getElementById('clearTextBtn');
+  const playBtn        = document.getElementById('playBtn');
+  const playBtnIcon    = document.getElementById('playBtnIcon');
+  const playBtnText    = document.getElementById('playBtnText');
+  const previewBtn     = document.getElementById('previewBtn');
+  const resetBtn       = document.getElementById('resetBtn');
+  const downloadBtn    = document.getElementById('downloadBtn');
+  const copyBtn        = document.getElementById('copyBtn');
+  const statusDot      = document.getElementById('statusDot');
+  const statusText     = document.getElementById('statusText');
+  const waveform       = document.getElementById('waveform');
+  const progressTrack  = document.getElementById('progressTrack');
+  const player         = document.getElementById('player');
+  const playerSection  = document.getElementById('playerSection');
+  const playerVoice    = document.getElementById('playerVoiceName');
+  const rateSlider     = document.getElementById('rateSlider');
+  const rateVal        = document.getElementById('rateVal');
+  const rateLabel      = document.getElementById('rateLabel');
+  const pitchSlider    = document.getElementById('pitchSlider');
+  const pitchVal       = document.getElementById('pitchVal');
+  const pitchLabel     = document.getElementById('pitchLabel');
+  const toast          = document.getElementById('toast');
   const voiceCountStat = document.getElementById('voiceCountStat');
+  const themeToggle    = document.getElementById('themeToggle');
+  const historyCard    = document.getElementById('historyCard');
+  const historyList    = document.getElementById('historyList');
+  const historyClearBtn = document.getElementById('historyClearBtn');
+  const html           = document.documentElement;
 
-  let allVoices = [];
-  let filteredVoices = [];
-  let currentAudioUrl = null;
+  /* ── Footer year ─────────────────────────────────────────── */
+  document.getElementById('footerYear').textContent = new Date().getFullYear();
 
-  /* ── Toast ───────────────────────────────────────── */
+  /* ── Theme toggle ────────────────────────────────────────── */
+  (() => {
+    const saved = localStorage.getItem('tts_theme') || 'dark';
+    html.dataset.theme = saved;
+    themeToggle.textContent = saved === 'light' ? '☀️' : '🌙';
+  })();
+  themeToggle.addEventListener('click', () => {
+    const isLight = html.dataset.theme === 'light';
+    html.dataset.theme = isLight ? 'dark' : 'light';
+    themeToggle.textContent = isLight ? '🌙' : '☀️';
+    localStorage.setItem('tts_theme', html.dataset.theme);
+  });
+
+  /* ── HTML escape helper ──────────────────────────────────── */
+  function escapeHtml(str) {
+    return String(str ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  /* ── Toast ───────────────────────────────────────────────── */
   let toastTimer;
   function showToast(msg, type = 'info') {
     toast.textContent = (type === 'success' ? '✅ ' : type === 'err' ? '❌ ' : 'ℹ️ ') + msg;
     toast.className = `toast show ${type}`;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.className = 'toast'; }, 3500);
+    toastTimer = setTimeout(() => { toast.className = 'toast'; }, 4500);
   }
 
-  /* ── Char counter ────────────────────────────────── */
+  /* ── Char + word counter ─────────────────────────────────── */
   function updateCharCount() {
-    const len = textArea.value.length;
-    const max = 5000;
-    charCount.textContent = `${len} / ${max} characters`;
-    charCount.className = 'char-count' + (len > max * 0.9 ? ' warn' : '') + (len >= max ? ' over' : '');
+    const len   = textArea.value.length;
+    const words = textArea.value.trim() ? textArea.value.trim().split(/\s+/).length : 0;
+    charCountEl.textContent = `${len.toLocaleString()} / ${MAX_CHARS.toLocaleString()} chars · ${words} word${words !== 1 ? 's' : ''}`;
+    charCountEl.className = 'char-count' +
+      (len > MAX_CHARS * 0.9 ? ' warn' : '') +
+      (len >= MAX_CHARS ? ' over' : '');
   }
   textArea.addEventListener('input', updateCharCount);
   updateCharCount();
 
-  /* ── Rate / Pitch sliders ────────────────────────── */
-  function rateText(v) {
-    if (v === 0) return 'Normal';
-    return v > 0 ? 'Fast' : 'Slow';
-  }
-  function pitchText(v) {
-    if (v === 0) return 'Normal';
-    return v > 0 ? 'High' : 'Low';
-  }
+  clearTextBtn.addEventListener('click', () => {
+    textArea.value = ''; updateCharCount(); textArea.focus();
+  });
+
+  /* ── Rate / Pitch sliders ────────────────────────────────── */
   rateSlider.addEventListener('input', () => {
     const v = parseInt(rateSlider.value);
-    rateVal.textContent = (v >= 0 ? '+' : '') + v + '%';
-    rateLabel.textContent = rateText(v);
+    rateVal.textContent   = (v >= 0 ? '+' : '') + v + '%';
+    rateLabel.textContent = v === 0 ? 'Normal' : v > 0 ? 'Fast' : 'Slow';
   });
   pitchSlider.addEventListener('input', () => {
     const v = parseInt(pitchSlider.value);
-    pitchVal.textContent = (v >= 0 ? '+' : '') + v + 'Hz';
-    pitchLabel.textContent = pitchText(v);
+    pitchVal.textContent   = (v >= 0 ? '+' : '') + v + 'Hz';
+    pitchLabel.textContent = v === 0 ? 'Normal' : v > 0 ? 'High' : 'Low';
   });
 
-  /* ── Voice loading & filtering ───────────────────── */
+  /* ── Favorites ───────────────────────────────────────────── */
+  function isFav(name) { return favorites.includes(name); }
+  function saveFavs()  { localStorage.setItem('tts_favorites', JSON.stringify(favorites)); }
+
+  function updateFavStar() {
+    const v = voiceSelect.value;
+    favStarBtn.textContent = isFav(v) ? '⭐' : '☆';
+    favStarBtn.className   = 'fav-star-btn' + (isFav(v) ? ' active' : '');
+    favStarBtn.title       = isFav(v) ? 'Remove from favorites' : 'Add to favorites';
+  }
+
+  favStarBtn.addEventListener('click', () => {
+    const v = voiceSelect.value;
+    if (!v) return;
+    if (isFav(v)) { favorites = favorites.filter(f => f !== v); showToast('Removed from favorites'); }
+    else          { favorites = [v, ...favorites]; showToast('Added to favorites ⭐', 'success'); }
+    saveFavs(); updateFavStar(); populateSelect();
+  });
+
+  favOnlyBtn.addEventListener('click', () => {
+    favOnlyActive = !favOnlyActive;
+    favOnlyBtn.classList.toggle('active', favOnlyActive);
+    applyFilters();
+  });
+
+  /* ── Voice loading & filtering ───────────────────────────── */
   async function loadVoices() {
     try {
       const res = await fetch('/api/voices');
       allVoices = await res.json();
       voiceCountStat.textContent = allVoices.length;
+      buildLangFilter();
       applyFilters();
-    } catch (e) {
+    } catch {
       voiceCount.textContent = 'Failed to load voices.';
       showToast('Could not load voices. Is the server running?', 'err');
     }
   }
 
+  function buildLangFilter() {
+    const langs = [...new Set(allVoices.map(v => v.locale.split(' (')[0]))].sort();
+    langFilter.innerHTML = '<option value="">All Languages</option>' +
+      langs.map(l => `<option value="${l}">${l}</option>`).join('');
+  }
+
   function applyFilters() {
-    const q = voiceSearch.value.toLowerCase();
-    const g = genderFilter.value;
+    const q    = voiceSearch.value.toLowerCase();
+    const g    = genderFilter.value;
+    const lang = langFilter.value;
     filteredVoices = allVoices.filter(v =>
-      (!q || v.name.toLowerCase().includes(q) || v.locale.toLowerCase().includes(q)) &&
-      (!g || v.gender === g)
+      (!q    || v.name.toLowerCase().includes(q) || v.locale.toLowerCase().includes(q)) &&
+      (!g    || v.gender === g) &&
+      (!lang || v.locale.startsWith(lang)) &&
+      (!favOnlyActive || isFav(v.name))
     );
     populateSelect();
   }
 
   function populateSelect() {
     const prev = voiceSelect.value;
-    voiceSelect.innerHTML = filteredVoices.map(v =>
-      `<option value="${v.name}">${v.name} — ${v.locale} (${v.gender})</option>`
-    ).join('');
-    // Restore selection if still available
+    const favs = filteredVoices.filter(v => isFav(v.name));
+    const rest  = filteredVoices.filter(v => !isFav(v.name));
+
+    if (favOnlyActive && filteredVoices.length === 0) {
+      voiceSelect.innerHTML = '<option value="" disabled>No favorites yet — click ☆ to add one</option>';
+      voiceCount.textContent = '0 voices found';
+      voiceMeta.innerHTML = '';
+      return;
+    }
+
+    const optFavs = favs.map(v => `<option value="${escapeHtml(v.name)}">⭐ ${escapeHtml(v.name)} — ${escapeHtml(v.locale)} (${escapeHtml(v.gender)})</option>`).join('');
+    const optRest = rest.map(v => `<option value="${escapeHtml(v.name)}">${escapeHtml(v.name)} — ${escapeHtml(v.locale)} (${escapeHtml(v.gender)})</option>`).join('');
+
+    voiceSelect.innerHTML =
+      (favs.length ? `<optgroup label="⭐ Favorites">${optFavs}</optgroup>` : '') +
+      (rest.length ? `<optgroup label="All Voices">${optRest}</optgroup>`   : '');
+
     if (prev && filteredVoices.find(v => v.name === prev)) voiceSelect.value = prev;
     voiceCount.textContent = `${filteredVoices.length} voice${filteredVoices.length !== 1 ? 's' : ''} found`;
     updateMeta();
+    updateFavStar();
   }
 
   function updateMeta() {
     const v = allVoices.find(v => v.name === voiceSelect.value);
     if (!v) { voiceMeta.innerHTML = ''; return; }
     voiceMeta.innerHTML = `
-      <span class="badge badge-blue">🌐 ${v.locale}</span>
+      <span class="badge badge-blue">🌐 ${escapeHtml(v.locale)}</span>
       <span class="badge ${v.gender === 'Female' ? 'badge-purple' : 'badge-green'}">
-        ${v.gender === 'Female' ? '♀️' : '♂️'} ${v.gender}
+        ${v.gender === 'Female' ? '♀️' : '♂️'} ${escapeHtml(v.gender)}
       </span>
+      ${isFav(v.name) ? '<span class="badge badge-gold">⭐ Favorite</span>' : ''}
     `;
   }
 
-  voiceSearch.addEventListener('input', applyFilters);
-  genderFilter.addEventListener('change', applyFilters);
-  voiceSelect.addEventListener('change', updateMeta);
+  voiceSearch.addEventListener('input',  applyFilters);
+  langFilter.addEventListener('change',  applyFilters);
+  genderFilter.addEventListener('change',applyFilters);
+  voiceSelect.addEventListener('change', () => { updateMeta(); updateFavStar(); });
 
-  /* ── Status helpers ─────────────────────────────── */
+  /* ── Status helpers ──────────────────────────────────────── */
   function setStatus(state, msg) {
-    statusDot.className = 'status-dot' + (state === 'loading' ? ' pulse' : state === 'ok' ? ' ok' : state === 'err' ? ' err' : '');
+    statusDot.className    = 'status-dot' + (state === 'loading' ? ' pulse' : state === 'ok' ? ' ok' : state === 'err' ? ' err' : '');
     statusText.textContent = msg;
-    statusText.className = 'status-text' + (state === 'err' ? ' error' : '');
-    waveform.className = 'waveform' + (state === 'loading' ? ' active' : '');
+    statusText.className   = 'status-text' + (state === 'err' ? ' error' : '');
+    waveform.className     = 'waveform'    + (state === 'loading' ? ' active' : '');
+    progressTrack.className = 'progress-track' + (state === 'loading' ? ' active' : '');
   }
   function clearStatus() { setStatus('', ''); }
 
-  /* ── TTS generation ──────────────────────────────── */
-  async function playSpeech() {
-    const text  = textArea.value.trim();
+  /* ── Reset all settings ──────────────────────────────────── */
+  function resetAll() {
+    rateSlider.value = 0; pitchSlider.value = 0;
+    rateVal.textContent = '+0%';  rateLabel.textContent = 'Normal';
+    pitchVal.textContent = '+0Hz'; pitchLabel.textContent = 'Normal';
+    voiceSearch.value = ''; langFilter.value = ''; genderFilter.value = '';
+    if (favOnlyActive) { favOnlyActive = false; favOnlyBtn.classList.remove('active'); }
+    applyFilters();
+    playerSection.className = 'player-section';
+    downloadBtn.disabled = true; copyBtn.disabled = true;
+    currentAudioUrl = null; currentDownloadUrl = null;
+    clearStatus();
+    showToast('Settings reset to defaults');
+  }
+  resetBtn.addEventListener('click', resetAll);
+
+  /* ── History ─────────────────────────────────────────────── */
+  function addToHistory(item) {
+    historyItems = [item, ...historyItems].slice(0, 5);
+    sessionStorage.setItem('tts_history', JSON.stringify(historyItems));
+    renderHistory();
+  }
+
+  function renderHistory() {
+    if (!historyItems.length) { historyCard.classList.remove('visible'); return; }
+    historyCard.classList.add('visible');
+    historyList.innerHTML = historyItems.map(item => {
+      const shortVoice = escapeHtml(item.voice.split('-').slice(2).join('-') || item.voice);
+      const gender     = escapeHtml(item.gender);
+      const previewTxt = escapeHtml(item.text.substring(0, 90) + (item.text.length > 90 ? '…' : ''));
+      const audioSrc   = escapeHtml(item.audio_url);
+      const dlAttr     = item.download_url.startsWith('blob:')
+        ? `href="${escapeHtml(item.download_url)}" download="${escapeHtml(item.download_name || 'speech.mp3')}"`
+        : `href="${escapeHtml(item.download_url)}"`;
+      return `
+      <div class="history-item">
+        <div class="history-item-top">
+          <span class="badge badge-blue">🎤 ${shortVoice}</span>
+          <span class="badge ${item.gender === 'Female' ? 'badge-purple' : 'badge-green'}">${item.gender === 'Female' ? '♀️' : '♂️'} ${gender}</span>
+          <span class="history-time">${new Date(item.timestamp).toLocaleTimeString()}</span>
+        </div>
+        <div class="history-text">"${previewTxt}"</div>
+        <div class="history-actions">
+          <audio class="history-audio" controls src="${audioSrc}" preload="none"></audio>
+          <a ${dlAttr} class="btn btn-secondary btn-sm">⬇ MP3</a>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  historyClearBtn.addEventListener('click', () => {
+    historyItems = []; sessionStorage.removeItem('tts_history');
+    renderHistory(); showToast('History cleared');
+  });
+
+  renderHistory(); // restore from sessionStorage on page load
+
+  /* ── Preview voice ───────────────────────────────────────── */
+  previewBtn.addEventListener('click', () => {
+    const voice = voiceSelect.value;
+    if (!voice) { showToast('Please select a voice first', 'err'); return; }
+    const voiceShort = voice.split('-').slice(2).join('-') || voice;
+    const sample = `Hello! I am ${voiceShort}. This is how I sound. Powered by IN NET CREATIONS, created by Manohar.S.`;
+    playSpeech(true, sample);
+  });
+
+  /* ── Base64 to Blob URL helper (serverless fallback) ─────── */
+  function base64ToBlobUrl(b64, mime = 'audio/mpeg') {
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return URL.createObjectURL(new Blob([bytes], { type: mime }));
+  }
+
+  /* ── TTS generation ──────────────────────────────────────── */
+  async function playSpeech(isPreview = false, overrideText = null) {
+    const text  = (overrideText !== null ? overrideText : textArea.value).trim();
     const voice = voiceSelect.value;
     const rate  = parseInt(rateSlider.value);
     const pitch = parseInt(pitchSlider.value);
 
-    if (!text) { showToast('Please enter some text first.', 'err'); return; }
+    if (!text)  { showToast('Please enter some text first.', 'err'); return; }
     if (!voice) { showToast('Please select a voice.', 'err'); return; }
 
-    playBtn.disabled = true;
+    playBtn.disabled    = true;
+    previewBtn.disabled = true;
     downloadBtn.disabled = true;
+    copyBtn.disabled    = true;
     playBtnIcon.textContent = '⏳';
-    playBtnText.textContent = 'Generating…';
-    setStatus('loading', 'Synthesizing speech…');
+    playBtnText.textContent = isPreview ? 'Previewing…' : 'Generating…';
+    setStatus('loading', isPreview ? 'Generating preview…' : 'Synthesizing speech…');
     playerSection.className = 'player-section';
-
-    // Removed ObjectURL revocation since we use standard backend URLs now
-    let downloadUrlStr = '';
 
     try {
       const res = await fetch('/api/tts', {
@@ -1060,37 +1053,71 @@
       }
 
       const data = await res.json();
-      
-      // Update the player with the new audio URL served by backend
-      player.src = data.audio_url;
-      downloadUrlStr = data.download_url;
-      
+
+      // Use inline base64 Blob URL when provided (e.g. serverless Vercel), else backend URL
+      const playbackUrl = data.audio_base64 ? base64ToBlobUrl(data.audio_base64) : data.audio_url;
+      currentAudioUrl    = playbackUrl;
+      currentDownloadUrl = data.audio_base64 ? playbackUrl : data.download_url;
+
+      player.src = playbackUrl;
       playerSection.className = 'player-section visible';
       playerVoice.textContent = voice;
-      setStatus('ok', 'Ready to play');
+      setStatus('ok', isPreview ? 'Preview ready' : 'Ready to play');
       player.play();
       downloadBtn.disabled = false;
-      showToast('Speech generated successfully!', 'success');
+      copyBtn.disabled     = Boolean(data.audio_base64);
+      showToast(isPreview ? 'Preview ready!' : 'Speech generated successfully!', 'success');
+
+      // Add to history (not for preview mode)
+      if (!isPreview) {
+        const info = allVoices.find(v => v.name === voice);
+        addToHistory({
+          voice, text, gender: info?.gender || '',
+          audio_url: playbackUrl,
+          download_url: currentDownloadUrl,
+          download_name: `INNET_TTS_${voice}_${Date.now()}.mp3`,
+          timestamp: Date.now()
+        });
+      }
+
     } catch (e) {
       setStatus('err', e.message);
       showToast(e.message, 'err');
     } finally {
-      playBtn.disabled = false;
+      playBtn.disabled    = false;
+      previewBtn.disabled = false;
       playBtnIcon.textContent = '▶';
       playBtnText.textContent = 'Generate & Play';
     }
   }
 
-  /* ── Download ────────────────────────────────────── */
+  /* ── Download ────────────────────────────────────────────── */
   downloadBtn.addEventListener('click', () => {
-    if (!downloadUrlStr) return;
-    window.location.href = downloadUrlStr;
+    if (!currentDownloadUrl) return;
+    if (currentDownloadUrl.startsWith('blob:')) {
+      const a = document.createElement('a');
+      a.href = currentDownloadUrl;
+      a.download = `INNET_TTS_${voiceSelect.value || 'Voice'}_${Date.now()}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } else {
+      window.location.href = currentDownloadUrl;
+    }
     showToast('Downloading MP3…', 'success');
   });
 
-  playBtn.addEventListener('click', playSpeech);
+  /* ── Copy Link ───────────────────────────────────────────── */
+  copyBtn.addEventListener('click', () => {
+    if (!currentAudioUrl) return;
+    const url = window.location.origin + currentAudioUrl;
+    navigator.clipboard.writeText(url)
+      .then(() => showToast('Audio link copied to clipboard!', 'success'))
+      .catch(() => showToast('Could not copy — try right-clicking the player.', 'err'));
+  });
 
-  // Keyboard shortcut: Ctrl+Enter
+  /* ── Play button + keyboard shortcut ────────────────────── */
+  playBtn.addEventListener('click', () => playSpeech());
   document.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
       e.preventDefault();
@@ -1098,6 +1125,7 @@
     }
   });
 
+  /* ── Bootstrap ───────────────────────────────────────────── */
   loadVoices();
 </script>
 </body>

@@ -1,3 +1,5 @@
 flask
-edge-tts
+edge-tts>=7.3.1
 gunicorn
+# Optional: desktop window support
+# pywebview
